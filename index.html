@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Firmas Corporativas - Claro Empresas</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome para iconos de la interfaz -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+    .preview-container table {
+      border-collapse: collapse;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800">
+
+  <!-- Header -->
+  <header class="bg-red-600 text-white py-4 px-6 shadow-md">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <i class="fa-solid fa-file-signature text-2xl"></i>
+        <h1 class="text-xl font-bold tracking-wide">Claro empresas | Generador de Firmas</h1>
+      </div>
+      <span class="bg-red-700 text-xs px-3 py-1.5 rounded-full font-medium">Versión Corporativa (Perú)</span>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto p-4 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- Left Column: Form & Image Cropper (5 cols) -->
+    <section class="lg:col-span-5 space-y-6">
+      
+      <!-- Card: Formulario -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2 border-b pb-3 border-slate-100">
+          <span class="p-1.5 bg-red-50 text-red-600 rounded-lg"><i class="fa-solid fa-id-card"></i></span>
+          Datos de la Firma
+        </h2>
+        
+        <div class="space-y-4">
+          <!-- Nombre -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1" for="input-nombre">
+              Nombre Completo
+            </label>
+            <input type="text" id="input-nombre" value="" 
+                   class="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition"
+                   placeholder="Nombres">
+          </div>
+
+          <!-- Cargo -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1" for="input-cargo">
+              Cargo
+            </label>
+            <input type="text" id="input-cargo" value="" 
+                   class="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition"
+                   placeholder="Cargo">
+          </div>
+
+          <!-- Correo -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1" for="input-correo">
+              Correo Electrónico
+            </label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                <i class="fa-solid fa-envelope"></i>
+              </span>
+              <input type="email" id="input-correo" value="" 
+                     class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition"
+                     placeholder="correo@claro-empresa.com.pe">
+            </div>
+          </div>
+
+          <!-- Teléfono -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1" for="input-telefono">
+              Teléfono (Link WhatsApp automático)
+            </label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                <i class="fa-solid fa-phone"></i>
+              </span>
+              <input type="text" id="input-telefono" value="" 
+                     class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition"
+                     placeholder="Telefono">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Foto de Perfil & Recorte Circular -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2 border-b pb-3 border-slate-100">
+          <span class="p-1.5 bg-red-50 text-red-600 rounded-lg"><i class="fa-solid fa-camera"></i></span>
+          Foto de Perfil (Recorte Circular)
+        </h2>
+        
+        <!-- Input de Imagen -->
+        <div class="mb-4">
+          <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
+            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+              <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 mb-2"></i>
+              <p class="text-sm text-slate-600 font-medium">Subir foto de colaborador</p>
+              <p class="text-xs text-slate-400 mt-1">PNG, JPG o JPEG</p>
+            </div>
+            <input type="file" id="input-foto" accept="image/*" class="hidden">
+          </label>
+        </div>
+
+        <!-- Panel de Ajuste (Canvas / Editor) -->
+        <div id="cropper-container" class="hidden space-y-4">
+          <div class="bg-slate-900 rounded-xl overflow-hidden p-4 relative flex flex-col items-center justify-center">
+            <p class="text-white text-xs mb-2 text-center opacity-85">Arrastra y ajusta usando los controles de abajo</p>
+            
+            <div class="relative w-64 h-64 border border-dashed border-slate-600 rounded-full overflow-hidden bg-slate-950 flex items-center justify-center">
+              <canvas id="canvas-crop" class="max-w-none cursor-grab active:cursor-grabbing"></canvas>
+            </div>
+          </div>
+
+          <!-- Controles de Ajuste -->
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-semibold text-slate-500 uppercase w-12">Zoom</span>
+              <input type="range" id="control-zoom" min="0.1" max="3" step="0.05" value="1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-red-600">
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-semibold text-slate-500 uppercase w-12">Girar</span>
+              <input type="range" id="control-rotar" min="0" max="360" step="1" value="0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-red-600">
+            </div>
+            <div class="flex justify-between gap-2 pt-2">
+              <button id="btn-reiniciar-foto" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-rotate-left"></i> Reiniciar
+              </button>
+              <button id="btn-aplicar-foto" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold transition flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-check"></i> Aplicar Recorte
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Live Preview & Exports (7 cols) -->
+    <section class="lg:col-span-7 space-y-6">
+      
+      <!-- Card: Previsualización Real -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex justify-between items-center mb-4 border-b pb-3 border-slate-100">
+          <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span class="p-1.5 bg-red-50 text-red-600 rounded-lg"><i class="fa-solid fa-eye"></i></span>
+            Previsualización en Tiempo Real
+          </h2>
+          <span class="text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full font-medium flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Listo
+          </span>
+        </div>
+
+        <!-- Contenedor donde se dibuja la firma para verla -->
+        <div class="overflow-x-auto bg-slate-50 border border-slate-200 rounded-xl p-4 flex justify-center items-center">
+          <div id="contenedor-firma" class="preview-container bg-white p-4 shadow-sm inline-block">
+            <!-- Aquí el JavaScript inyectará el HTML puro de la firma -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Panel de Acciones y Exportaciones -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2 border-b pb-3 border-slate-100">
+          <span class="p-1.5 bg-red-50 text-red-600 rounded-lg"><i class="fa-solid fa-download"></i></span>
+          Acciones de Exportación (Recomendado para Remotos)
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Acción 1: Copiar Firma Visual -->
+          <div class="border border-slate-200 hover:border-red-200 p-4 rounded-xl transition bg-slate-50 space-y-3 flex flex-col justify-between">
+            <div>
+              <h3 class="font-bold text-slate-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-paste text-red-600"></i> Copiar Copia Visual
+              </h3>
+              <p class="text-xs text-slate-500 mt-1">
+                Copia la firma procesada para pegarla directamente en la ventana de firmas de Outlook.
+              </p>
+            </div>
+            <button id="btn-copiar-visual" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
+              <i class="fa-solid fa-copy"></i> Copiar Firma para Pegar
+            </button>
+          </div>
+
+          <!-- Acción 2: Descargar como Archivo HTML -->
+          <div class="border border-slate-200 hover:border-red-200 p-4 rounded-xl transition bg-slate-50 space-y-3 flex flex-col justify-between">
+            <div>
+              <h3 class="font-bold text-slate-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-file-code text-red-600"></i> Descargar Firma (.html)
+              </h3>
+              <p class="text-xs text-slate-500 mt-1">
+                La mejor opción si estás por control remoto. Descarga el archivo, ábrelo en la máquina remota y cópialo desde allí.
+              </p>
+            </div>
+            <button id="btn-descargar-html" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
+              <i class="fa-solid fa-file-arrow-down"></i> Descargar Archivo HTML
+            </button>
+          </div>
+        </div>
+
+        <!-- Alertas personalizadas en lugar de alert() del navegador -->
+        <div id="toast-notificacion" class="hidden bg-emerald-600 text-white px-4 py-3 rounded-xl flex items-center justify-between shadow-md transition-all duration-300 animate-bounce">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-circle-check text-xl"></i>
+            <span id="toast-mensaje" class="text-sm font-medium">¡Firma copiada exitosamente!</span>
+          </div>
+          <button onclick="document.getElementById('toast-notificacion').classList.add('hidden')" class="text-white opacity-85 hover:opacity-100">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Ver Código HTML generado (Opcional para desarrolladores/expertos) -->
+        <details class="group border border-slate-200 rounded-xl overflow-hidden">
+          <summary class="flex justify-between items-center p-4 bg-slate-50 cursor-pointer font-semibold text-sm text-slate-700 select-none group-open:bg-slate-100">
+            <span><i class="fa-solid fa-code mr-1.5"></i> Ver código fuente HTML generado</span>
+            <i class="fa-solid fa-chevron-down transition-transform group-open:rotate-180 text-slate-500"></i>
+          </summary>
+          <div class="p-4 bg-slate-950 text-slate-200 text-xs font-mono overflow-x-auto max-h-60 rounded-b-xl border-t border-slate-200">
+            <pre id="codigo-html-salida" class="whitespace-pre-wrap"></pre>
+          </div>
+        </details>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-slate-800 text-slate-400 py-6 text-center text-sm border-t border-slate-700 mt-12">
+    <div class="max-w-7xl mx-auto px-6">
+      <p class="font-semibold">Claro Empresas © 2026</p>
+      <p class="text-xs opacity-75 mt-1">Herramienta interna de generación de firmas corporativas con soporte para conexiones de escritorio remoto.</p>
+      <p class="text-xs opacity-60 mt-2">Versión 1.0 | Creado por <a href="https://adolfogelabert.github.io/" target="_blank" class="underline hover:text-white">Adolfo J. Gelabert Semeco</a></p>
+    </div>
+  </footer>
+
+  <!-- SCRIPT PARA CONTROLAR EL COMPORTAMIENTO -->
+  <script>
+    // --- IMÁGENES POR DEFECTO EN BASE64 O SVG ---
+    // Logos e íconos convertidos en datos para que la firma sea autónoma y no dependa de servidores remotos de hosting de fotos.
+    const LOGO_CLARO_SVG_BASE64 = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" width="240" height="200"><rect width="240" height="200" fill="%23ffffff"/><circle cx="120" cy="85" r="45" fill="%23E31A14"/><circle cx="120" cy="85" r="41" fill="%23ffffff"/><circle cx="120" cy="85" r="33" fill="%23E31A14"/><text x="120" y="89" font-family="'Roboto', 'Helvetica', sans-serif" font-weight="900" font-size="14" fill="%23ffffff" text-anchor="middle">Claro-</text><text x="120" y="152" font-family="'Roboto', 'Helvetica', sans-serif" font-weight="900" font-size="28" fill="%23333333" text-anchor="middle">empresas</text><line x1="40" y1="168" x2="200" y2="168" stroke="%23cccccc" stroke-width="2"/><text x="120" y="190" font-family="'Roboto', sans-serif" font-size="10" fill="%23666666" text-anchor="middle">Conectamos tu empresa</text></svg>`;
+    
+    // Icono Email Rojo
+    const ICON_EMAIL_BASE64 = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="20" r="18" fill="%23e31a14"/><rect x="10" y="13" width="20" height="14" rx="2" fill="none" stroke="%23ffffff" stroke-width="2"/><path d="M10 14.5 L20 20 L30 14.5" fill="none" stroke="%23ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+    // Icono Teléfono / WhatsApp Rojo
+    const ICON_TELEF_BASE64 = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="20" r="18" fill="%23e31a14"/><path d="M14 13 C13.5 13 13 13.5 13 14 C13 21 19 27 26 27 C26.5 27 27 26.5 27 26 L25.5 23.5 C25.2 23.1 24.7 23.1 24.4 23.3 L23.1 24.2 C20.9 23.1 19.4 21.6 18.3 19.4 L19.2 18.1 C19.4 17.8 19.4 17.3 19.1 17 L16.5 14 C16.5 13.5 14.5 13 14 13 Z" fill="%23ffffff"/></svg>`;
+
+    // Footer Corporativo (Tecnología + Asesoría = Resultados) en SVG vectorial para nitidez absoluta
+    const FOOTER_FIRMA_SVG_BASE64 = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 180" width="650" height="180"><rect width="650" height="180" fill="%23FBFBFB"/><line x1="0" y1="0" x2="650" y2="0" stroke="%23dddddd" stroke-width="1"/><rect x="0" y="110" width="650" height="70" fill="%231a1a1a"/><path d="M 520 110 L 650 110 L 650 180 L 480 180 Z" fill="%23E31A14"/><text x="325" y="136" font-family="'Roboto', 'Arial', sans-serif" font-weight="900" font-size="18" fill="%23ffffff" text-anchor="middle">TECNOLOGÍA <tspan fill="%23E31A14">+</tspan> ASESORÍA <tspan fill="%23E31A14">=</tspan> RESULTADOS</text><text x="325" y="158" font-family="'Roboto', 'Arial', sans-serif" font-size="11" fill="%23cccccc" text-anchor="middle">Impulsamos el crecimiento de tu empresa con soluciones que generan valor y potencian su competitividad.</text><circle cx="50" cy="50" r="16" fill="none" stroke="%23E31A14" stroke-width="1.5"/><rect x="44" y="40" width="12" height="20" rx="2" fill="none" stroke="%23E31A14" stroke-width="2"/><circle cx="50" cy="56" r="1" fill="%23E31A14"/><path d="M 54 44 A 6 6 0 0 1 54 52" fill="none" stroke="%23E31A14" stroke-width="1.5"/><text x="120" y="47" font-family="'Roboto', 'Arial', sans-serif" font-weight="700" font-size="10" fill="%231a1a1a">CONECTIVIDAD</text><text x="120" y="59" font-family="'Roboto', 'Arial', sans-serif" font-weight="700" font-size="10" fill="%231a1a1a">MÓVIL</text><line x1="200" y1="35" x2="200" y2="65" stroke="%23dddddd" stroke-width="1"/><circle cx="235" cy="50" r="14" fill="none" stroke="%23E31A14" stroke-width="1.5"/><line x1="221" y1="50" x2="249" y2="50" stroke="%23E31A14" stroke-width="1"/><line x1="235" y1="36" x2="235" y2="64" stroke="%23E31A14" stroke-width="1"/><path d="M 225 43 Q 235 40 245 43 Q 235 60 225 43" fill="none" stroke="%23E31A14" stroke-width="1"/><text x="260" y="47" font-family="'Roboto', 'Arial', sans-serif" font-weight="700" font-size="10" fill="%231a1a1a">CONECTIVIDAD</text><text x="260" y="59" font-family="'Roboto', 'Arial', sans-serif" font-weight="700" font-size="10" fill="%231a1a1a">INTERNET</text><line x1="345" y1="35" x2="345" y2="65" stroke="%23dddddd" stroke-width="1"/><rect x="375" y="42" width="20" height="13" rx="1" fill="none" stroke="%23E31A14" stroke-width="1.5"/><line x1="380" y1="55" x2="376" y2="59" stroke="%23E31A14" stroke-width="1.5"/><line x1="390" y1="55" x2="394" y2="59" stroke="%23E31A14" stroke-width="1.5"/><line x1="382" y1="59" x2="388" y2="59" stroke="%23E31A14" stroke-width="2"/><path d="M 379 50 L 384 46 L 388 49 L 392 44" fill="none" stroke="%23E31A14" stroke-width="1.5"/><text x="405" y="47" font-family="'Roboto', 'Arial', sans-serif" font-weight="700" font-size="10" fill="%231a1a1a">SOLUCIONES</text><text x="405" y="59" font-family="'Roboto', 'Arial', sans-serif" font-weight="700" font-size="10" fill="%231a1a1a">A MEDIDA</text><line x1="490" y1="35" x2="490" y2="65" stroke="%23dddddd" stroke-width="1"/><circle cx="530" cy="45" r="5" fill="none" stroke="%23E31A14" stroke-width="1.5"/><path d="M 522 58 A 9 9 0 0 1 538 58" fill="none" stroke="%23E31A14" stroke-width="1.5"/><circle cx="518" cy="48" r="4" fill="none" stroke="%23E31A14" stroke-width="1.5"/><circle cx="542" cy="48" r="4" fill="none" stroke="%23E31A14" stroke-width="1.5"/><text x="555" y="47" font-family="'Roboto', 'Arial', sans-serif" font-weight="700" font-size="10" fill="%231a1a1a">Y MÁS BENEFICIOS</text><text x="555" y="59" font-family="'Roboto', 'Arial', sans-serif" font-weight="700" font-size="10" fill="%231a1a1a">PARA TU EMPRESA</text></svg>`;
+
+    // Silueta circular por defecto para cuando no se haya subido una imagen
+    const FOTO_DEFECTO_CIRCULO = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNTAgMTUwIiB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCI+PGNpcmNsZSBjeD0iNzUiIGN5PSI3NSIgcj0iNzQiIGZpbGw9IiNlMmU4ZjAiIHN0cm9rZT0iI2NiZDVlMSIgc3Ryb2tlLXdpZHRoPSIxIi8+PHRleHQgeD0iNzUiIHk9Ijc4IiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzk0YTNiOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QUNBIFZBIExBPC90ZXh0Pjx0ZXh0IHg9Ijc1IiB5PSI5MiIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM5NGEzYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiPklNQUdFTiBERTwvdGV4dD48dGV4dCB4PSI3NSIgeT0iMTA2IiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzk0YTNiOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UEVSRklMPC90ZXh0Pjwvc3ZnPg==`;
+
+    // --- VARIABLES DE ESTADO ---
+    let imagenOriginalObj = null;
+    let fotoRecortadaBase64 = FOTO_DEFECTO_CIRCULO;
+    
+    // Configuración del recortador
+    const canvas = document.getElementById('canvas-crop');
+    const ctx = canvas.getContext('2d');
+    let zoom = 1.0;
+    let rotation = 0;
+    let posX = 0;
+    let posY = 0;
+    let isDragging = false;
+    let startX, startY;
+
+    // --- MANEJO DE ARCHIVOS (SUBIDA) ---
+    const inputFoto = document.getElementById('input-foto');
+    const cropperContainer = document.getElementById('cropper-container');
+    const controlZoom = document.getElementById('control-zoom');
+    const controlRotar = document.getElementById('control-rotar');
+
+    inputFoto.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        imagenOriginalObj = new Image();
+        imagenOriginalObj.onload = function() {
+          // Inicializar posición de recorte
+          zoom = 1.0;
+          rotation = 0;
+          posX = canvas.width / 2;
+          posY = canvas.height / 2;
+          
+          controlZoom.value = 1.0;
+          controlRotar.value = 0;
+          
+          cropperContainer.classList.remove('hidden');
+          dibujarRecortador();
+        };
+        imagenOriginalObj.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // --- LÓGICA DEL CANVAS EDITOR (RECORTADOR CIRCULAR) ---
+    canvas.width = 256;
+    canvas.height = 256;
+
+    function dibujarRecortador() {
+      if (!imagenOriginalObj) return;
+
+      // Limpiar canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.save();
+      
+      // Mover al centro para aplicar transformaciones
+      ctx.translate(posX, posY);
+      ctx.rotate((rotation * Math.PI) / 180);
+      ctx.scale(zoom, zoom);
+      
+      // Dibujar imagen centrada en su punto de arrastre
+      const w = imagenOriginalObj.width;
+      const h = imagenOriginalObj.height;
+      const aspect = w / h;
+      
+      let drawW, drawH;
+      if (aspect > 1) {
+        drawH = 200;
+        drawW = 200 * aspect;
+      } else {
+        drawW = 200;
+        drawH = 200 / aspect;
+      }
+      
+      ctx.drawImage(imagenOriginalObj, -drawW / 2, -drawH / 2, drawW, drawH);
+      ctx.restore();
+
+      // Dibujar guía visual de la máscara circular
+      ctx.save();
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 3]);
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, (canvas.width / 2) - 4, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // --- ARRASTRE DEL CANVAS (TOUCH & MOUSE) ---
+    function startDrag(e) {
+      isDragging = true;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      startX = clientX - posX;
+      startY = clientY - posY;
+    }
+
+    function moveDrag(e) {
+      if (!isDragging) return;
+      e.preventDefault();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      posX = clientX - startX;
+      posY = clientY - startY;
+      dibujarRecortador();
+    }
+
+    function endDrag() {
+      isDragging = false;
+    }
+
+    canvas.addEventListener('mousedown', startDrag);
+    canvas.addEventListener('mousemove', moveDrag);
+    window.addEventListener('mouseup', endDrag);
+
+    canvas.addEventListener('touchstart', startDrag, { passive: false });
+    canvas.addEventListener('touchmove', moveDrag, { passive: false });
+    window.addEventListener('touchend', endDrag);
+
+    // Controles de ajuste deslizantes
+    controlZoom.addEventListener('input', function() {
+      zoom = parseFloat(this.value);
+      dibujarRecortador();
+    });
+
+    controlRotar.addEventListener('input', function() {
+      rotation = parseInt(this.value);
+      dibujarRecortador();
+    });
+
+    // Reiniciar
+    document.getElementById('btn-reiniciar-foto').addEventListener('click', function() {
+      zoom = 1.0;
+      rotation = 0;
+      posX = canvas.width / 2;
+      posY = canvas.height / 2;
+      controlZoom.value = 1.0;
+      controlRotar.value = 0;
+      dibujarRecortador();
+    });
+
+    // Guardar recorte circular real y transparente
+    document.getElementById('btn-aplicar-foto').addEventListener('click', function() {
+      if (!imagenOriginalObj) return;
+
+      // Crear un canvas temporal de tamaño final de firma (150x150)
+      const outCanvas = document.createElement('canvas');
+      outCanvas.width = 150;
+      outCanvas.height = 150;
+      const outCtx = outCanvas.getContext('2d');
+
+      // Crear la máscara circular
+      outCtx.beginPath();
+      outCtx.arc(75, 75, 74, 0, Math.PI * 2);
+      outCtx.clip();
+
+      // Dibujar la imagen recortada en base a las posiciones relativas
+      outCtx.save();
+      // Escalar posiciones a la dimensión final (150 / 256)
+      const scaleFactor = 150 / 256;
+      outCtx.translate(posX * scaleFactor, posY * scaleFactor);
+      outCtx.rotate((rotation * Math.PI) / 180);
+      outCtx.scale(zoom * scaleFactor, zoom * scaleFactor);
+
+      const w = imagenOriginalObj.width;
+      const h = imagenOriginalObj.height;
+      const aspect = w / h;
+      
+      let drawW, drawH;
+      if (aspect > 1) {
+        drawH = 200;
+        drawW = 200 * aspect;
+      } else {
+        drawW = 200;
+        drawH = 200 / aspect;
+      }
+
+      outCtx.drawImage(imagenOriginalObj, -drawW / 2, -drawH / 2, drawW, drawH);
+      outCtx.restore();
+
+      // Guardar en formato Base64 para inyectar directo
+      fotoRecortadaBase64 = outCanvas.toDataURL('image/png');
+      
+      // Ocultar editor y refrescar vista previa de la firma
+      cropperContainer.classList.add('hidden');
+      inputFoto.value = ''; // Limpiar input file
+      renderFirma();
+      mostrarToast("¡Foto recortada y aplicada!");
+    });
+
+
+    // --- GENERADOR DEL HTML FINAL (MAQUETADO TABULAR PARA OUTLOOK) ---
+    function generarCodigoHTMLFirma() {
+      const nombre = document.getElementById('input-nombre').value.trim() || "Nombres";
+      const cargo = document.getElementById('input-cargo').value.trim() || "Cargo";
+      const correo = document.getElementById('input-correo').value.trim() || "correo@claro-empresa.com.pe";
+      const telefono = document.getElementById('input-telefono').value.trim() || "Telefono";
+      
+      // Limpiar teléfono para el link de WhatsApp (ej: 958 192 246 -> 51958192246)
+      const numLimpio = telefono.replace(/\D/g, '');
+      const linkWhatsApp = numLimpio.startsWith('51') ? `https://wa.me/${numLimpio}` : `https://wa.me/51${numLimpio}`;
+
+      // Retorna una plantilla de tabla HTML 100% compatible con Outlook
+      return `<table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Roboto', 'Arial', sans-serif; line-height: 1.2; border-collapse: collapse; background-color: #ffffff; width: 650px;">
+  <!-- Sección Principal: Logo, Datos y Foto -->
+  <tr>
+    <td style="padding: 20px 0 20px 0; vertical-align: top;">
+      <table cellpadding="0" cellspacing="0" border="0" style="width: 100%; border-collapse: collapse;">
+        <tr>
+          <!-- Columna Izquierda: Logo Claro -->
+          <td style="width: 200px; text-align: center; vertical-align: middle; padding-right: 15px; border-right: 2px solid #dddddd;">
+            <img src="images/logo-claro.png" width="160" height="133" alt="Claro Empresas" style="display: block; margin: 0 auto; border: 0; outline: none; text-decoration: none;" />
+          </td>
+          
+          <!-- Columna Central: Datos Personales -->
+          <td style="padding-left: 25px; text-align: left; vertical-align: middle;">
+            <!-- Nombre -->
+            <h2 style="margin: 0; font-family: 'Roboto', 'Arial', sans-serif; font-size: 26px; font-weight: 900; color: #E31A14; letter-spacing: -0.5px;">
+              ${nombre}
+            </h2>
+            
+            <!-- Línea Separadora Roja -->
+            <table cellpadding="0" cellspacing="0" border="0" style="margin-top: 5px; margin-bottom: 8px;">
+              <tr>
+                <td style="background-color: #E31A14; width: 45px; height: 2px;"></td>
+              </tr>
+            </table>
+
+            <!-- Cargo -->
+            <p style="margin: 0; font-family: 'Roboto', 'Arial', sans-serif; font-size: 14px; font-weight: 700; color: #1a1a1a;">
+              ${cargo}
+            </p>
+            <!-- Compañía -->
+            <p style="margin: 0 0 15px 0; font-family: 'Roboto', 'Arial', sans-serif; font-size: 13px; font-weight: 500; color: #777777;">
+              Claro Empresas
+            </p>
+
+            <!-- Datos de Contacto (E-mail & Telf) -->
+            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+              <!-- Fila Correo -->
+              <tr>
+                <td style="vertical-align: middle; padding-bottom: 8px; width: 30px;">
+                  <img src="images/icon_email.png" width="24" height="24" style="display: block; border: 0;" />
+                </td>
+                <td style="vertical-align: middle; padding-bottom: 8px;">
+                  <a href="mailto:${correo}" style="font-family: 'Roboto', 'Arial', sans-serif; font-size: 13px; color: #333333; text-decoration: none; font-weight: 500;">
+                    ${correo}
+                  </a>
+                </td>
+              </tr>
+              <!-- Fila Teléfono / WhatsApp -->
+              <tr>
+                <td style="vertical-align: middle; width: 30px;">
+                  <img src="images/icon_telef.png" width="24" height="24" style="display: block; border: 0;" />
+                </td>
+                <td style="vertical-align: middle;">
+                  <a href="${linkWhatsApp}" style="font-family: 'Roboto', 'Arial', sans-serif; font-size: 13px; color: #333333; text-decoration: none; font-weight: 700;" target="_blank">
+                    +51 ${telefono}
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+
+          <!-- Columna Derecha: Foto de Perfil Circular -->
+          <td style="width: 170px; text-align: center; vertical-align: middle;">
+            <img src="${fotoRecortadaBase64}" width="140" height="140" alt="${nombre}" style="display: inline-block; border: 0; border-radius: 50%; width: 140px; height: 140px; outline: none; text-decoration: none;" />
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- Sección Inferior: Banner Corporativo de Claro (Fijo) -->
+  <tr>
+    <td style="vertical-align: top;">
+      <img src="images/footer-firma.png" width="650" height="180" alt="Tecnología + Asesoría = Resultados" style="display: block; border: 0; outline: none; text-decoration: none; width: 650px; height: 180px;" />
+    </td>
+  </tr>
+</table>`;
+    }
+
+    // --- REFRESCAR LA VISTA PREVIA ---
+    function renderFirma() {
+      const htmlFirma = generarCodigoHTMLFirma();
+      
+      // Cargar en contenedor de previsualización
+      document.getElementById('contenedor-firma').innerHTML = htmlFirma;
+      
+      // Cargar en bloque de código fuente
+      document.getElementById('codigo-html-salida').textContent = htmlFirma;
+    }
+
+    // Escuchar inputs para actualizar en tiempo real
+    document.getElementById('input-nombre').addEventListener('input', renderFirma);
+    document.getElementById('input-cargo').addEventListener('input', renderFirma);
+    document.getElementById('input-correo').addEventListener('input', renderFirma);
+    document.getElementById('input-telefono').addEventListener('input', renderFirma);
+
+    // --- FUNCIONES AUXILIARES DE ALERTA (TOAST) ---
+    function mostrarToast(mensaje) {
+      const toast = document.getElementById('toast-notificacion');
+      const text = document.getElementById('toast-mensaje');
+      text.textContent = mensaje;
+      toast.classList.remove('hidden');
+      
+      // Auto-ocultar después de 4 segundos
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 4000);
+    }
+
+    // --- EXPORTAR 1: COPIAR FORMATO VISUAL (CLIPBOARD COMPATIBLE CON OUTLOOK) ---
+    document.getElementById('btn-copiar-visual').addEventListener('click', async function() {
+      const contenedor = document.getElementById('contenedor-firma');
+      
+      // Creamos una selección del contenido renderizado visualmente
+      const range = document.createRange();
+      range.selectNode(contenedor);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      
+      try {
+        // Copiar el contenido con formato (HTML visual)
+        const exitoso = document.execCommand('copy');
+        if (exitoso) {
+          mostrarToast("¡Firma copiada! Ya puedes pegarla (Ctrl+V) en el editor de Outlook.");
+        } else {
+          throw new Error("No se pudo copiar.");
+        }
+      } catch (err) {
+        // Fallback por si falla por políticas del navegador
+        try {
+          const html = generarCodigoHTMLFirma();
+          const blob = new Blob([html], { type: 'text/html' });
+          const data = [new ClipboardItem({ 'text/html': blob })];
+          await navigator.clipboard.write(data);
+          mostrarToast("¡Firma copiada con éxito!");
+        } catch (e) {
+          alert("Error al copiar. Por favor, descarga el archivo HTML e inténtalo localmente.");
+        }
+      }
+      
+      // Limpiar selección
+      window.getSelection().removeAllRanges();
+    });
+
+    // --- EXPORTAR 2: DESCARGAR ARCHIVO HTML INDEPENDIENTE ---
+    document.getElementById('btn-descargar-html').addEventListener('click', function() {
+      const htmlContent = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Firma Corporativa Claro</title>
+</head>
+<body style="margin: 0; padding: 20px; background-color: #f1f5f9;">
+  <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; display: inline-block;">
+    <p style="font-family: Arial, sans-serif; font-size: 12px; color: #64748b; margin-top: 0; margin-bottom: 15px;">
+      Selecciona toda la firma de abajo (Ctrl+A o arrastrando el mouse), cópiala (Ctrl+C) y pégala en tu Outlook.
+    </p>
+    
+    <!-- INICIO DE LA FIRMA -->
+    ${generarCodigoHTMLFirma()}
+    <!-- FIN DE LA FIRMA -->
+  </div>
+</body>
+</html>`;
+
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      
+      // Nombre de archivo descriptivo
+      const nombreEmpleado = (document.getElementById('input-nombre').value.trim() || "firma").toLowerCase().replace(/\s+/g, '_');
+      link.setAttribute("href", url);
+      link.setAttribute("download", `firma_claro_${nombreEmpleado}.html`);
+      link.style.visibility = 'hidden';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      mostrarToast("¡Archivo HTML descargado con éxito!");
+    });
+
+    // Inicializar firma vacía en la carga
+    window.onload = function() {
+      renderFirma();
+    };
+  </script>
+</body>
+</html>
