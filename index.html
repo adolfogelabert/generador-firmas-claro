@@ -468,7 +468,7 @@
       const linkWhatsApp = numLimpio.startsWith('51') ? `https://wa.me/${numLimpio}` : `https://wa.me/51${numLimpio}`;
 
       // Retorna una plantilla de tabla HTML 100% compatible con Outlook
-      return `<table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Roboto', 'Arial', sans-serif; line-height: 1.2; border-collapse: collapse; background-color: #ffffff; width: 650px;">
+      return `<table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, Helvetica, sans-serif; line-height: 1.2; border-collapse: collapse; background-color: #ffffff; width: 650px;">
   <!-- Sección Principal: Logo, Datos y Foto -->
   <tr>
     <td style="padding: 20px 0 20px 0; vertical-align: top;">
@@ -476,15 +476,15 @@
         <tr>
           <!-- Columna Izquierda: Logo Claro -->
           <td style="width: 200px; text-align: center; vertical-align: middle; padding-right: 15px; border-right: 2px solid #dddddd;">
-            <img src="images/logo-claro.png" width="160" height="133" alt="Claro Empresas" style="display: block; margin: 0 auto; border: 0; outline: none; text-decoration: none;" />
+            <img src="https://adolfogelabert.github.io/generador-firmas-claro/images/logo-claro.png" width="160" height="133" alt="Claro Empresas" style="display: block; border: 0; outline: none; text-decoration: none;" />
           </td>
           
           <!-- Columna Central: Datos Personales -->
           <td style="padding-left: 25px; text-align: left; vertical-align: middle;">
             <!-- Nombre -->
-            <h2 style="margin: 0; font-family: 'Roboto', 'Arial', sans-serif; font-size: 26px; font-weight: 900; color: #E31A14; letter-spacing: -0.5px;">
+            <div style="margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: 26px; font-weight: 900; color: #E31A14; letter-spacing: -0.5px;">
               ${nombre}
-            </h2>
+            </div>
             
             <!-- Línea Separadora Roja -->
             <table cellpadding="0" cellspacing="0" border="0" style="margin-top: 5px; margin-bottom: 8px;">
@@ -494,23 +494,23 @@
             </table>
 
             <!-- Cargo -->
-            <p style="margin: 0; font-family: 'Roboto', 'Arial', sans-serif; font-size: 14px; font-weight: 700; color: #1a1a1a;">
+            <div style="margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 700; color: #1a1a1a;">
               ${cargo}
-            </p>
+            </div>
             <!-- Compañía -->
-            <p style="margin: 0 0 15px 0; font-family: 'Roboto', 'Arial', sans-serif; font-size: 13px; font-weight: 500; color: #777777;">
+            <div style="margin: 0 0 15px 0; font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: 500; color: #777777;">
               Claro Empresas
-            </p>
+            </div>
 
             <!-- Datos de Contacto (E-mail & Telf) -->
             <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
               <!-- Fila Correo -->
               <tr>
                 <td style="vertical-align: middle; padding-bottom: 8px; width: 30px;">
-                  <img src="images/icon_email.png" width="24" height="24" style="display: block; border: 0;" />
+                  <img src="https://adolfogelabert.github.io/generador-firmas-claro/images/icon_email.png" width="24" height="24" style="display: block; border: 0;" />
                 </td>
                 <td style="vertical-align: middle; padding-bottom: 8px;">
-                  <a href="mailto:${correo}" style="font-family: 'Roboto', 'Arial', sans-serif; font-size: 13px; color: #333333; text-decoration: none; font-weight: 500;">
+                  <a href="mailto:${correo}" style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #333333; text-decoration: none; font-weight: 500;">
                     ${correo}
                   </a>
                 </td>
@@ -518,10 +518,10 @@
               <!-- Fila Teléfono / WhatsApp -->
               <tr>
                 <td style="vertical-align: middle; width: 30px;">
-                  <img src="images/icon_telef.png" width="24" height="24" style="display: block; border: 0;" />
+                  <img src="https://adolfogelabert.github.io/generador-firmas-claro/images/icon_telef.png" width="24" height="24" style="display: block; border: 0;" />
                 </td>
                 <td style="vertical-align: middle;">
-                  <a href="${linkWhatsApp}" style="font-family: 'Roboto', 'Arial', sans-serif; font-size: 13px; color: #333333; text-decoration: none; font-weight: 700;" target="_blank">
+                  <a href="${linkWhatsApp}" style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #333333; text-decoration: none; font-weight: 700;" target="_blank">
                     +51 ${telefono}
                   </a>
                 </td>
@@ -531,7 +531,7 @@
 
           <!-- Columna Derecha: Foto de Perfil Circular -->
           <td style="width: 170px; text-align: center; vertical-align: middle;">
-            <img src="${fotoRecortadaBase64}" width="140" height="140" alt="${nombre}" style="display: inline-block; border: 0; border-radius: 50%; width: 140px; height: 140px; outline: none; text-decoration: none;" />
+            <img src="${fotoRecortadaBase64}" width="140" height="140" alt="${nombre}" style="border: 0; width: 140px; height: 140px; outline: none; text-decoration: none;" />
           </td>
         </tr>
       </table>
@@ -541,7 +541,7 @@
   <!-- Sección Inferior: Banner Corporativo de Claro (Fijo) -->
   <tr>
     <td style="vertical-align: top;">
-      <img src="images/footer-firma.png" width="650" height="180" alt="Tecnología + Asesoría = Resultados" style="display: block; border: 0; outline: none; text-decoration: none; width: 650px; height: 180px;" />
+      <img src="https://adolfogelabert.github.io/generador-firmas-claro/images/footer-firma.png" width="650" height="180" alt="Tecnología + Asesoría = Resultados" style="display: block; border: 0; outline: none; text-decoration: none; width: 650px; height: 180px;" />
     </td>
   </tr>
 </table>`;
