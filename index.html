@@ -55,6 +55,18 @@
                    placeholder="Nombres">
           </div>
 
+          <!-- Tamaño Fuente Nombre -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+              Tamaño Fuente Nombre: <span id="tamano-nombre-valor" class="text-red-600 font-bold">26px</span>
+            </label>
+            <div class="flex items-center gap-3">
+              <span class="text-xs text-slate-400 w-8">18px</span>
+              <input type="range" id="input-tamano-nombre" min="18" max="36" step="1" value="26" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-red-600">
+              <span class="text-xs text-slate-400 w-8">36px</span>
+            </div>
+          </div>
+
           <!-- Cargo -->
           <div>
             <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1" for="input-cargo">
@@ -94,6 +106,16 @@
                      placeholder="Telefono">
             </div>
           </div>
+
+          <!-- Botones de acción -->
+          <div class="flex gap-2 pt-2">
+            <button id="btn-guardar-config" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-sm text-sm">
+              <i class="fa-solid fa-floppy-disk"></i> Guardar Config
+            </button>
+            <button id="btn-cargar-config" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 px-4 rounded-xl transition flex items-center justify-center gap-2 text-sm">
+              <i class="fa-solid fa-rotate-left"></i> Cargar Config
+            </button>
+          </div>
         </div>
       </div>
 
@@ -103,9 +125,18 @@
           <span class="p-1.5 bg-red-50 text-red-600 rounded-lg"><i class="fa-solid fa-camera"></i></span>
           Foto de Perfil (Recorte Circular)
         </h2>
+
+        <!-- Switch on/off para foto -->
+        <div class="flex items-center justify-between mb-4">
+          <label class="text-sm font-medium text-slate-700">Mostrar foto de perfil</label>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="toggle-foto" class="sr-only peer" checked>
+            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+          </label>
+        </div>
         
         <!-- Input de Imagen -->
-        <div class="mb-4">
+        <div id="foto-upload-container" class="mb-4">
           <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
             <div class="flex flex-col items-center justify-center pt-5 pb-6">
               <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 mb-2"></i>
@@ -452,6 +483,7 @@
       cropperContainer.classList.add('hidden');
       inputFoto.value = ''; // Limpiar input file
       renderFirma();
+      guardarConfig();
       mostrarToast("¡Foto recortada y aplicada!");
     });
 
@@ -462,10 +494,19 @@
       const cargo = document.getElementById('input-cargo').value.trim() || "Cargo";
       const correo = document.getElementById('input-correo').value.trim() || "correo@claro-empresa.com.pe";
       const telefono = document.getElementById('input-telefono').value.trim() || "Telefono";
+      const tamanoNombre = document.getElementById('input-tamano-nombre').value;
+      const mostrarFoto = document.getElementById('toggle-foto').checked;
       
       // Limpiar teléfono para el link de WhatsApp (ej: 958 192 246 -> 51958192246)
       const numLimpio = telefono.replace(/\D/g, '');
       const linkWhatsApp = numLimpio.startsWith('51') ? `https://wa.me/${numLimpio}` : `https://wa.me/51${numLimpio}`;
+
+      // Columna de foto - solo se muestra si está activada
+      const fotoColumna = mostrarFoto ? `
+          <!-- Columna Derecha: Foto de Perfil Circular -->
+          <td style="width: 170px; text-align: center; vertical-align: middle;">
+            <img src="${fotoRecortadaBase64}" width="140" height="140" alt="${nombre}" style="border: 0; width: 140px; height: 140px; outline: none; text-decoration: none;" />
+          </td>` : '';
 
       // Retorna una plantilla de tabla HTML 100% compatible con Outlook
       return `<table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, Helvetica, sans-serif; line-height: 1.2; border-collapse: collapse; background-color: #ffffff; width: 650px;">
@@ -482,16 +523,9 @@
           <!-- Columna Central: Datos Personales -->
           <td style="padding-left: 25px; text-align: left; vertical-align: middle;">
             <!-- Nombre -->
-            <div style="margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: 26px; font-weight: 900; color: #E31A14; letter-spacing: -0.5px;">
+            <div style="margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: ${tamanoNombre}px; font-weight: 900; color: #E31A14; letter-spacing: -0.5px;">
               ${nombre}
             </div>
-            
-            <!-- Línea Separadora Roja -->
-            <table cellpadding="0" cellspacing="0" border="0" style="margin-top: 5px; margin-bottom: 8px;">
-              <tr>
-                <td style="background-color: #E31A14; width: 45px; height: 2px;"></td>
-              </tr>
-            </table>
 
             <!-- Cargo -->
             <div style="margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 700; color: #1a1a1a;">
@@ -528,11 +562,7 @@
               </tr>
             </table>
           </td>
-
-          <!-- Columna Derecha: Foto de Perfil Circular -->
-          <td style="width: 170px; text-align: center; vertical-align: middle;">
-            <img src="${fotoRecortadaBase64}" width="140" height="140" alt="${nombre}" style="border: 0; width: 140px; height: 140px; outline: none; text-decoration: none;" />
-          </td>
+          ${fotoColumna}
         </tr>
       </table>
     </td>
@@ -563,6 +593,85 @@
     document.getElementById('input-cargo').addEventListener('input', renderFirma);
     document.getElementById('input-correo').addEventListener('input', renderFirma);
     document.getElementById('input-telefono').addEventListener('input', renderFirma);
+    
+    // Slider de tamaño de fuente con actualización visual
+    const sliderTamano = document.getElementById('input-tamano-nombre');
+    const displayTamano = document.getElementById('tamano-nombre-valor');
+    sliderTamano.addEventListener('input', function() {
+      displayTamano.textContent = this.value + 'px';
+      renderFirma();
+    });
+
+    // Toggle de foto
+    document.getElementById('toggle-foto').addEventListener('change', function() {
+      const fotoContainer = document.getElementById('foto-upload-container');
+      const cropperContainer = document.getElementById('cropper-container');
+      if (this.checked) {
+        fotoContainer.classList.remove('hidden');
+      } else {
+        fotoContainer.classList.add('hidden');
+        cropperContainer.classList.add('hidden');
+        fotoRecortadaBase64 = null;
+      }
+      renderFirma();
+    });
+
+    // --- GUARDAR / CARGAR CONFIGURACIÓN EN LOCALSTORAGE ---
+    function guardarConfig() {
+      const config = {
+        nombre: document.getElementById('input-nombre').value,
+        cargo: document.getElementById('input-cargo').value,
+        correo: document.getElementById('input-correo').value,
+        telefono: document.getElementById('input-telefono').value,
+        tamanoNombre: sliderTamano.value,
+        mostrarFoto: document.getElementById('toggle-foto').checked,
+        fotoRecortada: fotoRecortadaBase64
+      };
+      localStorage.setItem('firmaClaroConfig', JSON.stringify(config));
+    }
+
+    function cargarConfig() {
+      const guardada = localStorage.getItem('firmaClaroConfig');
+      if (guardada) {
+        const config = JSON.parse(guardada);
+        if (config.nombre) document.getElementById('input-nombre').value = config.nombre;
+        if (config.cargo) document.getElementById('input-cargo').value = config.cargo;
+        if (config.correo) document.getElementById('input-correo').value = config.correo;
+        if (config.telefono) document.getElementById('input-telefono').value = config.telefono;
+        if (config.tamanoNombre) {
+          sliderTamano.value = config.tamanoNombre;
+          displayTamano.textContent = config.tamanoNombre + 'px';
+        }
+        if (config.mostrarFoto !== undefined) {
+          document.getElementById('toggle-foto').checked = config.mostrarFoto;
+          if (!config.mostrarFoto) {
+            document.getElementById('foto-upload-container').classList.add('hidden');
+          }
+        }
+        if (config.fotoRecortada && config.fotoRecortada !== FOTO_DEFECTO_CIRCULO) {
+          fotoRecortadaBase64 = config.fotoRecortada;
+        }
+      }
+    }
+
+    // Guardar automáticamente al cambiar cualquier campo
+    ['input-nombre', 'input-cargo', 'input-correo', 'input-telefono', 'input-tamano-nombre', 'toggle-foto'].forEach(id => {
+      document.getElementById(id).addEventListener('input', guardarConfig);
+      document.getElementById(id).addEventListener('change', guardarConfig);
+    });
+
+    // Botón Guardar Configuración
+    document.getElementById('btn-guardar-config').addEventListener('click', function() {
+      guardarConfig();
+      mostrarToast("¡Configuración guardada!");
+    });
+
+    // Botón Cargar Configuración
+    document.getElementById('btn-cargar-config').addEventListener('click', function() {
+      cargarConfig();
+      renderFirma();
+      mostrarToast("¡Configuración cargada!");
+    });
 
     // --- FUNCIONES AUXILIARES DE ALERTA (TOAST) ---
     function mostrarToast(mensaje) {
@@ -650,8 +759,9 @@
       mostrarToast("¡Archivo HTML descargado con éxito!");
     });
 
-    // Inicializar firma vacía en la carga
+    // Inicializar firma en la carga
     window.onload = function() {
+      cargarConfig();
       renderFirma();
     };
   </script>
